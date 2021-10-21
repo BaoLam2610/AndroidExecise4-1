@@ -38,8 +38,10 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
             return fragment
         }
     }
+
     var yearMonth: YearMonth? = null
-    var daysInMonth:Int = 0
+    var daysInMonth: Int = 0
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,16 +95,11 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         var daysInPreviousMonth = YearMonth.from(date).minusMonths(1).lengthOfMonth()
         var firstOfMonth = selectedDate.withDayOfMonth(1)
         var dayOfWeek = firstOfMonth.dayOfWeek.value - start
-        Log.d(TAG,dayOfWeek.toString())
-
         var dayOfNextWeek = 1
 
-        if(dayOfWeek != 7)
+        if (dayOfWeek != 7 && dayOfWeek >= 0)
             for (i in 1..(42)) {
                 when {
-//                    dayOfWeek < 0 -> {
-//                        arr.add(daysInPreviousMonth - 7 - dayOfWeek + i)
-//                    }
                     i <= dayOfWeek -> {
                         arr.add(daysInPreviousMonth - dayOfWeek + i)
                     }
@@ -116,37 +113,36 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
 
                 }
             }
-        else
+        else if (dayOfWeek == 7)
             for (i in 1..(42)) {
                 when {
-                    i  <= daysInMonth -> {
+                    i <= daysInMonth -> {
                         arr.add(i)
                     }
-                    i  > daysInMonth -> {
+                    i > daysInMonth -> {
                         arr.add(dayOfNextWeek)
                         dayOfNextWeek++
                     }
                 }
             }
-//        else if(dayOfWeek < 0)
-//            for (i in 1..(42)) {
-//                when {
-////                    dayOfWeek < 0 -> {
-////                        arr.add(daysInPreviousMonth - 7 - dayOfWeek + i)
-////                    }
-//                    i <= dayOfWeek -> {
-//                        arr.add(daysInPreviousMonth - dayOfWeek + i)
-//                    }
-//                    i - dayOfWeek <= daysInMonth -> {
-//                        arr.add(i - dayOfWeek)
-//                    }
-//                    i - dayOfWeek > daysInMonth -> {
-//                        arr.add(dayOfNextWeek)
-//                        dayOfNextWeek++
-//                    }
-//
-//                }
-//            }
+        else if (dayOfWeek < 0) {
+            var d = 1
+            for (i in 1..(42)) {
+                when {
+                    i <= 7 + dayOfWeek -> {
+                        arr.add(daysInPreviousMonth - 7 + i - dayOfWeek)
+                    }
+                    i in 8 + dayOfWeek until (daysInMonth + 8 + dayOfWeek) -> {    // mon - i = 6
+                        arr.add(d)
+                        d++
+                    }
+                    else -> {
+                        arr.add(dayOfNextWeek)
+                        dayOfNextWeek++
+                    }
+                }
+            }
+        }
         return arr
     }
 }

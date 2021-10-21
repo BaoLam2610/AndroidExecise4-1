@@ -23,8 +23,8 @@ class ViewPagerAdapter(
     @RequiresApi(Build.VERSION_CODES.O)
     fun setCalendar(currentDate: LocalDate) {
         fragmentList[0] = CalendarFragment.newInstance(currentDate.minusMonths(1))
-        fragmentList[1] =CalendarFragment.newInstance(currentDate)
-        fragmentList[2] =CalendarFragment.newInstance(currentDate.plusMonths(1))
+        fragmentList[1] = CalendarFragment.newInstance(currentDate)
+        fragmentList[2] = CalendarFragment.newInstance(currentDate.plusMonths(1))
         notifyDataSetChanged()
     }
 
